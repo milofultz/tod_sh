@@ -16,6 +16,8 @@
     * Eventually will do this in curses but this works for now
   * [x] Make curses print the timer loop instead of basic printf 
     * Getting a lot of use out of that NCurses book! I think I can implement this now.
+    * https://stackoverflow.com/questions/153890/printing-leading-0s-in-c
+    * https://stackoverflow.com/questions/907220/set-string-variable-in-c-from-argv
     * This was ridiculously easy!
 * Reading and writing to a file
   * [x] Read a file and display it's contents in the terminal
@@ -81,6 +83,8 @@
 * [ ] Play any audio
   * https://www.libsdl.org/release/SDL-1.2.15/docs/html/guideaudioexamples.html 
   * https://stackoverflow.com/questions/10110905/simple-sound-wave-generator-with-sdl-in-c
+  * https://stackoverflow.com/a/36550306/14857724 `<-` This one actually works!
+  * https://codereview.stackexchange.com/questions/41086/play-some-sine-waves-with-sdl2
 
 ---
 
@@ -97,5 +101,4 @@
 * List all tasks
 * List uncompleted tasks
 * List completed tasks
-*
 

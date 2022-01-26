@@ -14,7 +14,7 @@
     * https://stackoverflow.com/questions/39180642/why-does-printf-not-produce-any-output
     * https://www.man7.org/linux/man-pages/man3/fflush.3.html
     * Eventually will do this in curses but this works for now
-  * [x] Make curses print the timer loop instead of basic printf 
+  * [x] Make curses print the timer loop instead of basic printf
     * Getting a lot of use out of that NCurses book! I think I can implement this now.
     * https://stackoverflow.com/questions/153890/printing-leading-0s-in-c
     * https://stackoverflow.com/questions/907220/set-string-variable-in-c-from-argv
@@ -41,7 +41,7 @@
       * https://www.geeksforgeeks.org/storage-for-strings-in-c/
       * https://stackoverflow.com/questions/8465006/how-do-i-concatenate-two-strings-in-c
       * https://stackoverflow.com/questions/1575278/function-to-split-a-filepath-into-path-and-file
-    * [x] Write something to ~/.tod2 
+    * [x] Write something to ~/.tod2
       * https://stackoverflow.com/questions/14680232/how-to-detect-a-file-is-opened-or-not-in-c
       * used a lot of strcat. I think strings are still a mystery to me in C. should look it up better.
 * Use todo.txt styling/file formatting
@@ -70,7 +70,7 @@
   * [x] Style tasks based on their elements, a la todo.txt but easy
     * [x] create sample tasks in .tod2
     * [x] figure out how to conditionally parse strings in C
-      * https://stackoverflow.com/questions/3683602/single-quotes-vs-double-quotes-in-c-or-c 
+      * https://stackoverflow.com/questions/3683602/single-quotes-vs-double-quotes-in-c-or-c
     * [x] make a way to parse strings by basic rules
       * https://gist.github.com/RabaDabaDoba/145049536f815903c79944599c6f952a
     * [x] number each task in the list
@@ -81,7 +81,7 @@
   * https://stackoverflow.com/questions/7899119/what-does-s-mean-in-printf
   * [x] use it in task parser for each part
 * [ ] Play any audio
-  * https://www.libsdl.org/release/SDL-1.2.15/docs/html/guideaudioexamples.html 
+  * https://www.libsdl.org/release/SDL-1.2.15/docs/html/guideaudioexamples.html
   * https://stackoverflow.com/questions/10110905/simple-sound-wave-generator-with-sdl-in-c
   * https://stackoverflow.com/a/36550306/14857724 `<-` This one actually works!
   * https://codereview.stackexchange.com/questions/41086/play-some-sine-waves-with-sdl2

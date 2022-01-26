@@ -15,7 +15,6 @@ int main( int argc, char *argv[] )
     attroff(A_BOLD);
     refresh();
 
-    val = 1;
     while (val > 0)
     {
         move(2, 0);

@@ -1,9 +1,9 @@
 #!/bin/bash
 
 # Constants
-TOD_FILE=test.txt
-POMODORO_MARK=*
-TEMP=tempfile.txt
+TOD_FILE="$HOME/.tod"
+POMODORO_MARK="*"
+TEMP="tempfile.txt"
 
 # "Return" variables
 LINE=""
@@ -11,13 +11,13 @@ TASK=""
 
 get_line() {
     line_number=$1
-    LINE=$(sed -n "${line_number}p" $TOD_FILE)
+    LINE="$(sed -n "${line_number}p" $TOD_FILE)"
 }
 
 get_task() {
     task_number=$1
     get_line $task_number
-    TASK=$(echo $LINE | perl -ne 'print "$1" for /([^*]+)/;')
+    TASK="$(echo $LINE | perl -ne 'print "$1" for /([^*]+)/;')"
 }
 
 do_pomodoro() {
@@ -25,7 +25,7 @@ do_pomodoro() {
     get_task $task_number
 
     # Run pomodoro on current task
-    ./timer $TASK
+    ./timer "$TASK"
 
     # Return exit code of timer
     error=$?
@@ -39,21 +39,34 @@ list_tasks() {
     file=$1
     all_tasks=$(awk 'NF' $file)
 
+    completed='x .*'
+    yellow=$(tput setaf 3)
+    green=$(tput setaf 2)
+    reset=$(tput sgr0)
+
     modifier=''
     pattern=''
 
     which_tasks=$2
     case $which_tasks in
-        all)       pattern='.*' ;;
-        completed) pattern='x .*' ;;
+        all)
+            pattern='.*'
+            ;;
+        completed)
+            pattern=$completed
+            ;;
         *)
             modifier='!'
-            pattern='x .*'
+            pattern=$completed
             ;;
     esac
-    echo ""
-    echo -e "$all_tasks" | sed "/.*/=" | sed 'N;s/\n/ /' | sed -n "/$pattern/${modifier}p"
-    echo ""
+    echo -e "\n${yellow}   TASKS${reset}\n"
+    echo -e "$all_tasks" \
+        | sed "/.*/=" \
+        | sed 'N;s/\n/  /' \
+        | sed -n "/$pattern/${modifier}p" \
+        | sed "s/\($completed\)/${green}\1${reset}/"
+    echo -e ""
 }
 
 mark_complete() {
@@ -87,8 +100,8 @@ else
         mark_complete "$LINE"
         ;;
     delete | d)
-        line=$1
-        sed -l "${line}d" $TOD_FILE | \
+        task_number=$1
+        sed -l "${task_number}d" $TOD_FILE | \
             while read log; do echo $log >> $TEMP; done
         rm $TOD_FILE
         mv $TEMP $TOD_FILE

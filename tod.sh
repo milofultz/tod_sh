@@ -80,43 +80,51 @@ mark_complete() {
     fi
 }
 
-ACTION="$1"
+main() {
+    clear
 
-shift
+    ACTION="$1"
 
-if [[ $ACTION =~ ^[0-9]+$ ]]
-then
-    task_number=$ACTION
-    do_pomodoro $task_number
-else
-    case $ACTION in
-    add | a)
-        new_task=$1
-        echo $new_task >> $TOD_FILE
-        ;;
-    complete | c)
-        task_number=$1
-        get_line $task_number
-        mark_complete "$LINE"
-        ;;
-    delete | d)
-        task_number=$1
-        sed -l "${task_number}d" $TOD_FILE | \
-            while read log; do echo $log >> $TEMP; done
-        rm $TOD_FILE
-        mv $TEMP $TOD_FILE
-        ;;
-    list-all | la)
-        list_tasks $TOD_FILE all
-        ;;
-    list-completed | lc)
-        list_tasks $TOD_FILE completed
-        ;;
-    list | ls | *)
-        list_tasks $TOD_FILE
-        ;;
-    esac
-fi
+    shift
 
-exit 0;
+    if [[ $ACTION =~ ^[0-9]+$ ]]
+    then
+        task_number=$ACTION
+        do_pomodoro $task_number
+    else
+        case $ACTION in
+        add | a)
+            new_task=$1
+            echo $new_task >> $TOD_FILE
+            ;;
+        complete | c)
+            task_number=$1
+            get_line $task_number
+            mark_complete "$LINE"
+            ;;
+        delete | d)
+            task_number=$1
+            sed -l "${task_number}d" $TOD_FILE | \
+                while read log; do echo $log >> $TEMP; done
+            rm $TOD_FILE
+            mv $TEMP $TOD_FILE
+            ;;
+        list-all | la)
+            list_tasks $TOD_FILE all
+            ;;
+        list-completed | lc)
+            list_tasks $TOD_FILE completed
+            ;;
+        list | ls | *)
+            # list_tasks $TOD_FILE
+            ;;
+        esac
+    fi
+
+    list_tasks $TOD_FILE
+
+    exit 0;
+}
+
+main $@
 

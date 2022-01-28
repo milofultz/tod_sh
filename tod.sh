@@ -39,6 +39,7 @@ list_tasks() {
     file=$1
     all_tasks=$(awk 'NF' $file)
 
+    indent='   '
     completed='x .*'
     yellow=$(tput setaf 3)
     green=$(tput setaf 2)
@@ -60,23 +61,33 @@ list_tasks() {
             pattern=$completed
             ;;
     esac
-    echo -e "\n${yellow}   TASKS${reset}\n"
-    echo -e "$all_tasks" \
+
+    all_tasks=$(echo -e "$all_tasks" \
         | sed "/.*/=" \
         | sed 'N;s/\n/  /' \
         | sed -n "/$pattern/${modifier}p" \
-        | sed "s/\($completed\)/${green}\1${reset}/"
+        | sed "s/\($completed\)/${green}\1${reset}/")
+
+    echo -e "\n${yellow}${indent}TASKS${reset}\n"
+    if [[ -z $all_tasks ]]
+    then
+        echo "${indent}No tasks."
+    else
+        echo "$all_tasks"
+    fi
     echo -e ""
 }
 
 mark_complete() {
-    line=$1
-    if [[ $line =~ ^x[[:space:]] ]]
+    task_number=$1
+    get_line $task_number
+
+    if [[ $LINE =~ ^x[[:space:]] ]]
     then
-        incomplete_line=${line:2}
-        perl -i -pe "s/\Q$line\E/$incomplete_line/" $TOD_FILE
+        incomplete_line=${LINE:2}
+        perl -i -pe "s/\Q$LINE\E/$incomplete_line/" $TOD_FILE
     else
-        perl -i -pe "s/(\Q$line\E)/x \$1/" $TOD_FILE
+        perl -i -pe "s/(\Q$LINE\E)/x \$1/" $TOD_FILE
     fi
 }
 
@@ -84,6 +95,7 @@ main() {
     clear
 
     ACTION="$1"
+    list_option=''
 
     shift
 
@@ -99,8 +111,13 @@ main() {
             ;;
         complete | c)
             task_number=$1
-            get_line $task_number
-            mark_complete "$LINE"
+            if [[ -z $task_number ]]
+            then
+                # Equivalent to `lc`
+                list_option=completed
+            else
+                mark_complete $task_number
+            fi
             ;;
         delete | d)
             task_number=$1
@@ -110,18 +127,18 @@ main() {
             mv $TEMP $TOD_FILE
             ;;
         list-all | la)
-            list_tasks $TOD_FILE all
+            list_option=all
             ;;
         list-completed | lc)
-            list_tasks $TOD_FILE completed
+            list_option=completed
             ;;
         list | ls | *)
-            # list_tasks $TOD_FILE
+            list_option=''
             ;;
         esac
     fi
 
-    list_tasks $TOD_FILE
+    list_tasks $TOD_FILE $list_option
 
     exit 0;
 }

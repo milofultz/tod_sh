@@ -92,13 +92,13 @@
 
 ### What it should do
 
-* Add/remove tasks from file
-* Modify entries in file
-* Show given task on screen for one pomodoro and add 1 to pomodoro count if completed
-* Should alert user when pomodoro is complete
+* [x] Add/remove tasks from file
+* [x] Modify entries in file
+* [x] Show given task on screen for one pomodoro and add 1 to pomodoro count if completed
+* [x] Should alert user when pomodoro is complete
   * https://www.parallelrealities.co.uk/tutorials/shooter/shooter10.php
-* Mark tasks as complete
-* List all tasks
-* List uncompleted tasks
-* List completed tasks
+* [X] Mark tasks as complete
+* [X] List all tasks
+* [X] List uncompleted tasks
+* [X] List completed tasks
 

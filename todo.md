@@ -32,7 +32,7 @@
     * scanf is weird because of how it parses input. fgets doesn't have this issue
     * https://stackoverflow.com/questions/22065675/get-text-from-user-input-using-c
     * instead of a do while or a while with a real conditional, while(1) and an enclosed if/else works well
-  * [ ] Write to file in home dir (~/.tod2)
+  * [x] Write to file in home dir (~/.tod2)
     * [x] figure out how to get home dir
       * https://www.tutorialspoint.com/c_standard_library/c_function_getenv.htm
       * https://www.techonthenet.com/c_language/standard_library_functions/stdlib_h/getenv.php
@@ -80,7 +80,7 @@
   * https://www.lemoda.net/c/unix-regex/
   * https://stackoverflow.com/questions/7899119/what-does-s-mean-in-printf
   * [x] use it in task parser for each part
-* [ ] Play any audio
+* ~~Play any audio~~
   * https://www.libsdl.org/release/SDL-1.2.15/docs/html/guideaudioexamples.html
   * https://stackoverflow.com/questions/10110905/simple-sound-wave-generator-with-sdl-in-c
   * https://stackoverflow.com/a/36550306/14857724 `<-` This one actually works!

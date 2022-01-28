@@ -9,6 +9,13 @@ TEMP="tempfile.txt"
 LINE=""
 TASK=""
 
+init() {
+    if [[ -e $TOD_FILE ]]
+    then
+        touch $TOD_FILE
+    fi
+}
+
 get_line() {
     line_number=$1
     LINE="$(sed -n "${line_number}p" $TOD_FILE)"
@@ -69,7 +76,7 @@ list_tasks() {
         | sed "s/\($completed\)/${green}\1${reset}/")
 
     echo -e "\n${yellow}${indent}TASKS${reset}\n"
-    if [[ -z $all_tasks ]]
+    if [[ -z "$all_tasks" ]]
     then
         echo "${indent}No tasks."
     else
@@ -92,7 +99,7 @@ mark_complete() {
 }
 
 main() {
-    clear
+    init
 
     ACTION="$1"
     list_option=''
@@ -138,6 +145,7 @@ main() {
         esac
     fi
 
+    clear
     list_tasks $TOD_FILE $list_option
 
     exit 0;

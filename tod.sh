@@ -41,6 +41,9 @@ kill_timers() {
     # Stop all background Tod processes. Surpress errors because
     #   if an old process is finished, there is nothing to stop
     kill -9 $(cat "$PIDS") 2> /dev/null
+    # Starting a timer from a shell script creates the pid for
+    #   the script as well as the timer itself.
+    kill $(pgrep sleep $POMODORO_SECONDS) 2> /dev/null
 }
 
 time_left() {

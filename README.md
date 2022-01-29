@@ -2,7 +2,7 @@
 
 A simple pomodoro task manager in shell scripts.
 
-A [pomodoro](https://en.wikipedia.org/wiki/Pomodoro_Technique) is a 25 minute chunk of uninterrupted time. If this is uninterrupted, it will add a pomodoro to the task. If interrupted, it will *not* add a pomodoro to the task.
+A [pomodoro](https://en.wikipedia.org/wiki/Pomodoro_Technique) is a 25 minute chunk of uninterrupted time, followed by a 5 minute break. If this is uninterrupted, it will add a pomodoro to the task. If interrupted, it will *not* add a pomodoro to the task.
 
 *This is a rewrite and devolution more or less of my Python task manager, [Tod](https://github.com/milofultz/tod).*
 
@@ -19,8 +19,10 @@ Copy the `tod.sh` file somewhere that it can be referenced by your shell. In you
 
 Flag | Arguments | Description
 --- | --- | ---
+`[n]` | `n`: Task number | Start pomodoro timer
 N/A / `ls` | | List all uncompleted tasks
 `a "task"` | `task`: New task | Add new task
+`b` | | Start break timer
 `c n` | `n`: Task number | Mark task as complete/incomplete
 `d n` | `n`: Task number | Delete task
 `k` | | Kill timers

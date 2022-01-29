@@ -3,7 +3,9 @@
 # Constants
 TOD_FILE="$HOME/.tod"
 POMODORO_MARK="*"
-POMODORO_SECONDS=$(( 60 * 25 ))
+MINUTE=60
+POMODORO_SECONDS=$(( $MINUTE * 25 ))
+BREAK_SECONDS=$(( $MINUTE * 5 ))
 TEMP="tempfile.txt"
 RUNNING_TASK="/tmp/tod_task"
 PIDS="/tmp/tod_timer.pid"
@@ -55,6 +57,27 @@ time_left() {
     fi
 }
 
+ring_alarm() {
+    echo "Use command \`tod k\` to stop the alarm."
+
+    i=0
+    j=0
+    max=5
+    while [[ $i -lt $max  ]]
+    do
+        while [[ $j -lt $max ]]
+        do
+            echo -ne "\a"
+            sleep 0.15
+            (( j = j + 1 ))
+        done \
+
+        j=0
+        sleep 1.5
+        (( i = i + 1 ))
+    done
+}
+
 do_pomodoro() {
     task_number=$1
     get_task $task_number
@@ -63,27 +86,28 @@ do_pomodoro() {
 
     # Run pomodoro on current task
     echo -e "\nStarting timer for $TASK...\n"
-    i=0
-    max=5
     sleep $POMODORO_SECONDS \
+        && perl -i -pe "s/($TASK)/\$1$POMODORO_MARK/" $TOD_FILE \
         && echo -e "\n\nPOMODORO COMPLETE: $TASK\n" \
-        && while [[ $i -lt $max  ]]
-        do
-            while [[ $j -lt $max ]]
-            do
-                echo -ne "\a"
-                sleep 0.15
-                (( j = j + 1 ))
-            done \
-
-            j=0
-            sleep 1.5
-            (( i = i + 1 ))
-        done \
-        && perl -i -pe "s/($TASK)/\$1$POMODORO_MARK/" $TOD_FILE &
+        ring_alarm &
 
     echo $! > $PIDS
     echo $TASK > $RUNNING_TASK
+}
+
+take_break() {
+    i=5
+    while [[ $i -gt 0 ]]
+    do
+        echo "$i minutes left..."
+        sleep $MINUTE
+        i=$(($i - 1))
+    done \
+        && echo -e "\n\nBreak over!\n" \
+        && ring_alarm &
+
+    echo $! > $PIDS
+    echo 'BREAK' > $RUNNING_TASK
 }
 
 list_tasks() {
@@ -157,6 +181,10 @@ main() {
         add | a)
             new_task=$1
             echo $new_task >> $TOD_FILE
+            ;;
+        break | b)
+            take_break
+            exit 0
             ;;
         complete | c)
             task_number=$1

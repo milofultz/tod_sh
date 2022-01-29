@@ -6,7 +6,7 @@ POMODORO_MARK="*"
 MINUTE=60
 POMODORO_SECONDS=$(( $MINUTE * 25 ))
 BREAK_SECONDS=$(( $MINUTE * 5 ))
-TEMP="tempfile.txt"
+TEMP="/tmp/tod_tempfile"
 RUNNING_TASK="/tmp/tod_task"
 PIDS="/tmp/tod_timer.pid"
 
@@ -179,7 +179,7 @@ main() {
     else
         case $ACTION in
         add | a)
-            new_task=$1
+            new_task="$1"
             echo $new_task >> $TOD_FILE
             ;;
         break | b)

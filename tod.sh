@@ -203,6 +203,11 @@ main() {
             rm $TOD_FILE
             mv $TEMP $TOD_FILE
             ;;
+        help | h)
+            clear
+            cat README.md
+            exit 0
+            ;;
         kill | k)
             kill_timers
             exit 0

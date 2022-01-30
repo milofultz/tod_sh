@@ -74,9 +74,10 @@ ring_alarm() {
         #    sleep 0.15
         #    (( j = j + 1 ))
         #done
+        #j=0
+        tput flash
         play -n synth 3 sin 960 fade l 0 3 2.8 trim 0 1 repeat 2 2> /dev/null
 
-        j=0
         sleep 1.5
         (( i = i + 1 ))
     done
@@ -93,7 +94,7 @@ do_pomodoro() {
     sleep $POMODORO_SECONDS \
         && perl -i -pe "s/($TASK)/\$1$POMODORO_MARK/" $TOD_FILE \
         && echo -e "\n\nPOMODORO COMPLETE: $TASK\n" \
-        ring_alarm &
+        && ring_alarm &
 
     echo $! > $PIDS
     echo $TASK > $RUNNING_TASK
@@ -167,6 +168,10 @@ mark_complete() {
     fi
 }
 
+show_help() {
+    cat README.md
+}
+
 init
 
 ACTION="$1"
@@ -181,6 +186,11 @@ then
 else
     case $ACTION in
     add | a)
+        if [[ -z $TARGET ]]
+        then
+            echo "No task entered. Type \`tod h\` for help."
+            exit 1
+        fi
         echo $TARGET >> $TOD_FILE
         ;;
     break | b)
@@ -204,11 +214,12 @@ else
         ;;
     help | h)
         clear
-        cat README.md
+        show_help
         exit 0
         ;;
     kill | k)
         kill_timers
+        echo "All timers stopped."
         exit 0
         ;;
     list-all | la)

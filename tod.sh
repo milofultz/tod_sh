@@ -167,76 +167,68 @@ mark_complete() {
     fi
 }
 
-main() {
-    init
+init
 
-    ACTION="$1"
-    list_option=''
+ACTION="$1"
+TARGET="$2"
+list_option=''
 
-    shift
-
-    if [[ $ACTION =~ ^[0-9]+$ ]]
-    then
-        task_number=$ACTION
-        do_pomodoro $task_number
+if [[ $ACTION =~ ^[0-9]+$ ]]
+then
+    task_number=$ACTION
+    do_pomodoro $task_number
+    exit 0
+else
+    case $ACTION in
+    add | a)
+        echo $TARGET >> $TOD_FILE
+        ;;
+    break | b)
+        take_break
         exit 0
-    else
-        case $ACTION in
-        add | a)
-            new_task="$1"
-            echo $new_task >> $TOD_FILE
-            ;;
-        break | b)
-            take_break
-            exit 0
-            ;;
-        complete | c)
-            task_number=$1
-            if [[ -z $task_number ]]
-            then
-                # Equivalent to `lc`
-                list_option=completed
-            else
-                mark_complete $task_number
-            fi
-            ;;
-        delete | d)
-            task_number=$1
-            sed -l "${task_number}d" $TOD_FILE | \
-                while read log; do echo $log >> $TEMP; done
-            rm $TOD_FILE
-            mv $TEMP $TOD_FILE
-            ;;
-        help | h)
-            clear
-            cat README.md
-            exit 0
-            ;;
-        kill | k)
-            kill_timers
-            exit 0
-            ;;
-        list-all | la)
-            list_option=all
-            ;;
-        list-completed | lc)
+        ;;
+    complete | c)
+        if [[ -z $TARGET ]]
+        then
+            # Equivalent to `lc`
             list_option=completed
-            ;;
-        time | t)
-            time_left
-            exit 0
-            ;;
-        list | ls | *)
-            list_option=''
-            ;;
-        esac
-    fi
+        else
+            mark_complete $TARGET
+        fi
+        ;;
+    delete | d)
+        sed -l "${TARGET}d" $TOD_FILE | \
+            while read log; do echo $log >> $TEMP; done
+        rm $TOD_FILE
+        mv $TEMP $TOD_FILE
+        ;;
+    help | h)
+        clear
+        cat README.md
+        exit 0
+        ;;
+    kill | k)
+        kill_timers
+        exit 0
+        ;;
+    list-all | la)
+        list_option=all
+        ;;
+    list-completed | lc)
+        list_option=completed
+        ;;
+    time | t)
+        time_left
+        exit 0
+        ;;
+    list | ls | *)
+        list_option=''
+        ;;
+    esac
+fi
 
-    clear
-    list_tasks $TOD_FILE $list_option
+clear
+list_tasks $TOD_FILE $list_option
 
-    exit 0;
-}
-
-main $@
+exit 0;
 

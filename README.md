@@ -17,7 +17,7 @@ Clone the repo somewhere that it can be referenced by your shell. In your shell'
 
 ### Dependencies
 
-This uses [SoX](https://github.com/chirlu/sox) for the alarm, which can be installed using [Homebrew](https://formulae.brew.sh/formula/sox) on Mac. If you don't want that, you can uncomment the terminal `\a` alarm while loop, it's just not very audible nor effective for me.
+This uses [SoX](https://github.com/chirlu/sox) for the alarm, which can be installed using [Homebrew](https://formulae.brew.sh/formula/sox) on Mac.
 
 ## Usage
 

@@ -68,16 +68,13 @@ ring_alarm() {
     max=5
     while [[ $i -lt $max  ]]
     do
-        #while [[ $j -lt $max ]]
-        #do
-        #    echo -ne "\a"
-        #    sleep 0.15
-        #    (( j = j + 1 ))
-        #done
-        #j=0
-        tput flash
-        play -n synth 3 sin 960 fade l 0 3 2.8 trim 0 1 repeat 2 2> /dev/null
+        while [[ $j -lt 3 ]]
+        do
+            play ding.mp3 2> /dev/null
+            (( j = j + 1 ))
+        done
 
+        j=0
         sleep 1.5
         (( i = i + 1 ))
     done

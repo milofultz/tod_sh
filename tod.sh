@@ -183,12 +183,16 @@ then
 else
     case $ACTION in
     add | a)
-        if [[ -z $TARGET ]]
-        then
-            echo "No task entered. Type \`tod h\` for help."
-            exit 1
-        fi
-        echo $TARGET >> $TOD_FILE
+        shift # Get rid of the add call
+        for task in "$@"
+        do
+            if [[ -z $task ]]
+            then
+                echo "No task entered. Type \`tod h\` for help."
+                exit 1
+            fi
+            echo $task >> $TOD_FILE
+        done
         ;;
     break | b)
         take_break

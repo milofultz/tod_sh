@@ -139,8 +139,8 @@ list_tasks() {
     all_tasks=$(echo -e "$all_tasks" \
         | sed "/.*/=" \
         | sed 'N;s/\n/  /' \
-        | sed -n "/$pattern/${modifier}p" \
-        | sed "s/\($completed\)/${C_GREEN}\1${C_RESET}/")
+        | awk  "$modifier/^[[:digit:]][[:digit:]]*[[:space:]][[:space:]]*$pattern/ {print}" - \
+        | sed -e "s/\([[:digit:]][[:digit:]]*[[:space:]][[:space:]]*\)\($completed\)/\1${C_GREEN}\2${C_RESET}/")
 
     echo -e "\n${C_YELLOW}${indent}TASKS${C_RESET}\n"
     if [[ -z "$all_tasks" ]]

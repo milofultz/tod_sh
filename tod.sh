@@ -6,7 +6,6 @@ POMODORO_MARK="*"
 MINUTE=60
 POMODORO_SECONDS=$(( $MINUTE * 25 ))
 BREAK_SECONDS=$(( $MINUTE * 5 ))
-TEMP="/tmp/tod_tempfile"
 RUNNING_TASK="/tmp/tod_task"
 PIDS="/tmp/tod_timer.pid"
 
@@ -20,10 +19,9 @@ TASK=""
 
 
 init() {
-    if [[ -e $TOD_FILE ]]
-    then
-        touch $TOD_FILE
-    fi
+    touch $TOD_FILE
+    touch $RUNNING_TASK
+    touch $PIDS
 }
 
 get_line() {
@@ -48,6 +46,10 @@ kill_timers() {
 
 time_left() {
     running_pid=$(cat "$PIDS")
+    if [[ -z $running_pid ]]
+    then
+        exit 0
+    fi
     # Show elapsed time and suppress the header
     elapsed=$(ps -p $running_pid -o "etime=")
     task_name=$(cat "$RUNNING_TASK")

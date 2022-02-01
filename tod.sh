@@ -217,6 +217,7 @@ else
                 while read log; do echo $log; done)
         done
         echo -e "$new_tod" > $TOD_FILE
+        list_option=all
         ;;
     help | h)
         clear

@@ -208,10 +208,15 @@ else
         fi
         ;;
     delete | d)
-        sed -l "${TARGET}d" $TOD_FILE | \
-            while read log; do echo $log >> $TEMP; done
-        rm $TOD_FILE
-        mv $TEMP $TOD_FILE
+        shift # Remove command from arguments list
+        new_tod=$(cat $TOD_FILE)
+        for num in "$@"
+        do
+            new_tod=$(echo -e "$new_tod" | \
+                sed -l "${num}d" | \
+                while read log; do echo $log; done)
+        done
+        echo -e "$new_tod" > $TOD_FILE
         ;;
     help | h)
         clear

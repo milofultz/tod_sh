@@ -27,10 +27,10 @@ Flag | Arguments | Description
 --- | --- | ---
 `[n]` | `n`: Task number | Start pomodoro timer
 N/A / `ls` | | List all uncompleted tasks
-`a "task"` | `task`: New task | Add new task
+`a "task"[ "another task" ...]` | `task`: New task | Add new task
 `b` | | Start break timer
 `c n` | `n`: Task number | Mark task as complete/incomplete
-`d n` | `n`: Task number | Delete task
+`d n[ n ...]` | `n`: Task number | Delete task (NOTE: Multiple numbers need to be put in descending order, e.g. "tod d 6 3 1")
 `k` | | Kill timers
 `la` | | List all tasks
 `lc` / `c` | | List all completed tasks

@@ -25,7 +25,7 @@ Tod is used in the command line via whatever alias you created. For instance, if
 
 Flag | Arguments | Description
 --- | --- | ---
-`[n]` | `n`: Task number | Start pomodoro timer
+`n[ m]` | `n`: Task number<br>`m`: Minutes (25 by default) | Start pomodoro timer
 N/A / `ls` | | List all uncompleted tasks
 `a "task"[ "another task" ...]` | `task`: New task | Add new task
 `b` | | Start break timer

@@ -83,16 +83,23 @@ ring_alarm() {
 }
 
 do_pomodoro() {
-    task_number=$1
-    get_task $task_number
+    task_number="$1"
+    seconds="$2"
+    minutes=$(( time / 60 ))
+    get_task "$task_number"
 
     kill_timers
 
     # Run pomodoro on current task
-    echo -e "\nStarting timer for $TASK...\n"
-    sleep $POMODORO_SECONDS \
-        && perl -i -pe "s/($TASK)/\$1$POMODORO_MARK/" $TOD_FILE \
-        && echo -e "\n\nPOMODORO COMPLETE: $TASK\n" \
+    echo -e "Starting timer of $minutes minutes for \"$TASK\"."
+    sleep $seconds \
+        && if [[ $seconds -ge $POMODORO_SECONDS ]]
+           then
+               tasks=$(perl -i -pe "s/($TASK)/\$1$POMODORO_MARK/" $TOD_FILE)
+           else
+               tasks=$(cat $TOD_FILE)
+           fi \
+        && echo -e "\n\nTIMER COMPLETE: $TASK\n" \
         && ring_alarm &
 
     echo $! > $PIDS
@@ -177,10 +184,17 @@ ACTION="$1"
 TARGET="$2"
 list_option=''
 
-if [[ $ACTION =~ ^[0-9]+$ ]]
+if [[ "$ACTION" =~ ^[0-9]+$ ]]
 then
     task_number=$ACTION
-    do_pomodoro $task_number
+    # If $TARGET is not null and $TARGET is a number
+    if [[ -n "$TARGET" && "$TARGET" =~ ^[0-9]+$ ]]
+    then
+        time=$(( $TARGET * 60 ))
+    else
+        time=$POMODORO_SECONDS
+    fi
+    do_pomodoro $task_number $time
     exit 0
 else
     case $ACTION in

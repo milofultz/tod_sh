@@ -31,6 +31,7 @@ N/A / `ls` | | List all uncompleted tasks
 `b` | | Start break timer
 `c n` | `n`: Task number | Mark task as complete/incomplete
 `d n[ n ...]` | `n`: Task number | Delete task (NOTE: Multiple numbers need to be put in descending order, e.g. "tod d 6 3 1")
+`e` | | Open `.tod` file for editing
 `k` | | Kill timers
 `la` | | List all tasks
 `lc` / `c` | | List all completed tasks

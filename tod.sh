@@ -237,6 +237,9 @@ else
         echo -e "$new_tod" > $TOD_FILE
         list_option=all
         ;;
+    edit | e)
+        vi "$TOD_FILE"
+        ;;
     help | h)
         clear
         show_help

@@ -228,12 +228,16 @@ else
     delete | d)
         shift # Remove command from arguments list
         new_tod=$(cat $TOD_FILE)
-        for num in "$@"
+        # Sort in reverse order for correct deletion
+        task_numbers=$(echo -e "$@" | perl -pe "s/ /\n/g" | sort -gr)
+
+        for num in $task_numbers
         do
             new_tod=$(echo -e "$new_tod" | \
                 sed -l "${num}d" | \
                 while read log; do echo $log; done)
         done
+
         echo -e "$new_tod" > $TOD_FILE
         list_option=all
         ;;

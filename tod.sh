@@ -145,7 +145,7 @@ list_tasks() {
         priority)
             pattern=$priority
             ;;
-        *) # Don't show completed tasks
+        normal | *) # Don't show completed tasks
             modifier='!'
             pattern=$completed
             ;;
@@ -299,7 +299,7 @@ else
         exit 0
         ;;
     list | ls | *)
-        list_option=''
+        list_option=normal
         ;;
     esac
 fi

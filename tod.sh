@@ -124,7 +124,7 @@ list_tasks() {
     priority='\([[:alpha:]]\) .*'
     project=".*[[:space:]][[:space:]]*\+${PROJECT}"
 
-    modifier=''
+    show_completed=true
 
     which_tasks=$2
     case $which_tasks in
@@ -139,17 +139,24 @@ list_tasks() {
             ;;
         project)
             pattern=$project
+            show_completed=false
             ;;
         normal | *) # Don't show completed tasks
-            modifier='!'
-            pattern=$completed
+            pattern=$all
+            show_completed=false
             ;;
     esac
 
     all_tasks=$(echo -e "$all_tasks" \
         | sed "/.*/=" \
         | sed 'N;s/\n/  /' \
-        | awk  "$modifier/^[[:digit:]][[:digit:]]*[[:space:]][[:space:]]*$pattern/ {print}" - \
+        | awk  "/^[[:digit:]][[:digit:]]*[[:space:]][[:space:]]*$pattern/ {print}" - \
+        | if [[ $show_completed != "true" ]]
+        then
+            awk "!/^[[:digit:]][[:digit:]]*[[:space:]][[:space:]]*$completed/ {print}" -
+        else
+            cat
+        fi \
         | sed -e "s/\([[:digit:]][[:digit:]]*[[:space:]][[:space:]]*\)\($completed\)/\1${C_GREEN}\2${C_RESET}/")
 
     priority_tasks=$(echo -e "$all_tasks" \

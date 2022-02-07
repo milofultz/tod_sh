@@ -185,6 +185,24 @@ list_tasks() {
     echo -e ""
 }
 
+add_tasks() {
+    shift # Get rid of the add call
+
+    if [[ -z "$1" ]]
+    then
+        echo "No task entered. Type \`tod h\` for help."
+        exit 1
+    fi
+
+    for task in "$@"
+    do
+        if [[ ! -z "$task" ]]
+        then
+            echo $task >> $TOD_FILE
+        fi
+    done
+}
+
 mark_complete() {
     task_number=$1
     get_line $task_number
@@ -223,21 +241,7 @@ then
 else
     case $ACTION in
     add | a)
-        shift # Get rid of the add call
-
-        if [[ -z "$1" ]]
-        then
-            echo "No task entered. Type \`tod h\` for help."
-            exit 1
-        fi
-
-        for task in "$@"
-        do
-            if [[ ! -z "$task" ]]
-            then
-                echo $task >> $TOD_FILE
-            fi
-        done
+        add_tasks "$@"
         ;;
     break | b)
         take_break

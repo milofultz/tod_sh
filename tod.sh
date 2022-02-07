@@ -38,20 +38,36 @@ get_task() {
 }
 
 kill_timers() {
-    # Stop all background Tod processes. Surpress errors because
-    #   if an old process is finished, there is nothing to stop
-    kill -9 $(cat "$PIDS") 2> /dev/null
-    # Starting a timer from a shell script creates the pid for
-    #   the script as well as the timer itself.
-    kill $(pgrep sleep $POMODORO_SECONDS) 2> /dev/null
+    running_pid=$(cat "$PIDS")
+
+    if [[ -z $running_pid ]]
+    then
+        return 0
+    fi
+
+    is_running=$(ps -p $running_pid | tail -n +2)
+
+    if [[ $is_running ]]
+    then
+        running_task=$(cat "$RUNNING_TASK")
+        # Stop all background Tod processes. Surpress errors because
+        #   if an old process is finished, there is nothing to stop
+        echo "Ending existing timer for \"${running_task}\"."
+        kill -9 $running_pid 2> /dev/null
+        # Starting a timer from a shell script creates the pid for
+        #   the script as well as the timer itself.
+        kill $(pgrep sleep $POMODORO_SECONDS) 2> /dev/null
+    fi
 }
 
 time_left() {
     running_pid=$(cat "$PIDS")
+
     if [[ -z $running_pid ]]
     then
-        exit 0
+        return 0
     fi
+
     # Show elapsed time and suppress the header
     elapsed=$(ps -p $running_pid -o "etime=")
     task_name=$(cat "$RUNNING_TASK")
@@ -111,7 +127,7 @@ take_break() {
         && ring_alarm &
 
     echo $! > $PIDS
-    echo 'BREAK' > $RUNNING_TASK
+    echo 'Break' > $RUNNING_TASK
 }
 
 list_tasks() {
@@ -281,7 +297,6 @@ else
         ;;
     kill | k)
         kill_timers
-        echo "All timers stopped."
         exit 0
         ;;
     list-all | la)

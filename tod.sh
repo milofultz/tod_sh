@@ -125,25 +125,29 @@ take_break() {
 
 list_tasks() {
     file=$1
-    all_tasks=$(awk 'NF' $file)
+    all_tasks=$(awk 'NF' "$file")
 
     indent='   '
+    all='.*'
     completed='x .*'
     priority='\([[:alpha:]]\) .*'
+    project=".*[[:space:]][[:space:]]*\+${PROJECT}"
 
     modifier=''
-    pattern=''
 
     which_tasks=$2
     case $which_tasks in
         all)
-            pattern='.*'
+            pattern=$all
             ;;
         completed)
             pattern=$completed
             ;;
         priority)
             pattern=$priority
+            ;;
+        project)
+            pattern=$project
             ;;
         normal | *) # Don't show completed tasks
             modifier='!'
@@ -164,12 +168,12 @@ list_tasks() {
     other_tasks=$(echo -e "$all_tasks" \
         | awk "!/^[[:digit:]][[:digit:]]*[[:space:]][[:space:]]* $priority/ {print}")
 
-    if [[ "$which_tasks" == "priority" ]]
+    if [[ "$which_tasks" == "priority" ]] || [[ -z "$other_tasks" ]]
     then
         tasks=$priority_tasks
-    elif [[ ! -z "$priority_tasks" ]]
+    elif [[ ! -z "$priority_tasks" && ! -z "$priority_tasks" ]]
     then
-        tasks="${priority_tasks}\n${other_tasks}"
+        tasks="${priority_tasks}\n\n${other_tasks}"
     else
         tasks=$other_tasks
     fi
@@ -295,8 +299,20 @@ else
     list-completed | lc)
         list_option=completed
         ;;
-    priority | lp | p)
+    priority | lp)
         list_option=priority
+        ;;
+    project | p)
+        shift
+
+        list_option=project
+        PROJECT="$1"
+
+        if [[ -z "$PROJECT" ]]
+        then
+            echo -e "No project specified."
+            exit 1
+        fi
         ;;
     time | t)
         time_left

@@ -25,10 +25,22 @@ Tod is used in the command line via whatever alias you created. For instance, if
 
 ### Tasks
 
-A task is a line of text that can have modifiers preceding them.
+A task is a line of text with possible modifiers. The following are all allowed:
+
+* `A normal task`
+* `x Completed task`
+* `(A) High priority task!`
+* `Project task +projectname`
+* `x (C) A completed high priority project task +ford-prefect`
+
+#### Prefixes
 
 * `x Completed task` - An `x` represents completion.
 * `(A) High priority task!` - A set of parentheses with a single letter inside represents priority, A to Z representing highest to lowest.
+
+#### Suffixes
+
+* `Project task +projectname` - A `+` followed by a name with no spaces.
 
 ### Flags
 
@@ -44,6 +56,7 @@ N/A / `ls` | | List all uncompleted tasks
 `k` | | Kill timers
 `la` | | List all tasks
 `lc` / `c` | | List all completed tasks
-`lp` / `p` | | List all priority tasks
+`lp` | | List all priority tasks
+`p[ "project"]` | `project`: Project name | List all tasks belonging to project
 `t` | | See elapsed time for timer
 

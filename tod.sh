@@ -281,7 +281,6 @@ else
         vi "$TOD_FILE"
         ;;
     help | h)
-        clear
         show_help
         exit 0
         ;;

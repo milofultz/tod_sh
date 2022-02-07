@@ -3,9 +3,11 @@
 # Constants
 TOD_FILE="$HOME/.tod"
 POMODORO_MARK="*"
-MINUTE=60
-POMODORO_SECONDS=$(( $MINUTE * 25 ))
-BREAK_SECONDS=$(( $MINUTE * 5 ))
+SECONDS_IN_A_MINUTE=60
+POMODORO_MINUTES=25
+POMODORO_SECONDS=$(( $POMODORO_MINUTES * $SECONDS_IN_A_MINUTE ))
+BREAK_MINUTES=5
+BREAK_SECONDS=$(( $BREAK_MINUTES * $SECONDS_IN_A_MINUTE ))
 RUNNING_TASK="/tmp/tod_task"
 PIDS="/tmp/tod_timer.pid"
 
@@ -86,21 +88,15 @@ ring_alarm() {
 
 do_pomodoro() {
     task_number="$1"
-    seconds="$2"
-    minutes=$(( time / 60 ))
     get_task "$task_number"
 
     kill_timers
 
     # Run pomodoro on current task
-    echo -e "Starting timer of $minutes minutes for \"$TASK\"."
-    sleep $seconds \
-        && if [[ $seconds -ge $POMODORO_SECONDS ]]
-           then
-               tasks=$(perl -i -pe "s/($TASK)/\$1$POMODORO_MARK/" $TOD_FILE)
-           else
-               tasks=$(cat $TOD_FILE)
-           fi \
+    echo -e "Starting timer of $POMODORO_MINUTES minutes for \"$TASK\"."
+    #sleep $seconds \
+    sleep $POMODORO_SECONDS \
+        && perl -i -pe "s/(\Q${TASK}\E)/\$1$POMODORO_MARK/" $TOD_FILE \
         && echo -e "\n\nTIMER COMPLETE: $TASK\n" \
         && ring_alarm &
 
@@ -109,13 +105,8 @@ do_pomodoro() {
 }
 
 take_break() {
-    i=5
-    while [[ $i -gt 0 ]]
-    do
-        echo "$i minutes left..."
-        sleep $MINUTE
-        i=$(($i - 1))
-    done \
+    echo -e "Starting timer of $BREAK_MINUTES minutes."
+    sleep $BREAK_SECONDS \
         && echo -e "\n\nBreak over!\n" \
         && ring_alarm &
 
@@ -251,14 +242,7 @@ list_option=''
 if [[ "$ACTION" =~ ^[0-9]+$ ]]
 then
     task_number=$ACTION
-    # If $TARGET is not null and $TARGET is a number
-    if [[ -n "$TARGET" && "$TARGET" =~ ^[0-9]+$ ]]
-    then
-        time=$(( $TARGET * 60 ))
-    else
-        time=$POMODORO_SECONDS
-    fi
-    do_pomodoro $task_number $time
+    do_pomodoro $task_number
     exit 0
 else
     case $ACTION in

@@ -46,7 +46,7 @@ A task is a line of text with possible modifiers. The following are all allowed:
 
 Flag | Arguments | Description
 --- | --- | ---
-`n[ m]` | `n`: Task number<br>`m`: Minutes (25 by default) | Start pomodoro timer
+`n` | `n`: Task number | Start pomodoro timer
 N/A / `ls` | | List all uncompleted tasks
 `a "task"[ "another task" ...]` | `task`: New task | Add new task
 `b` | | Start break timer

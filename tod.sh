@@ -129,6 +129,7 @@ list_tasks() {
 
     indent='   '
     completed='x .*'
+    priority='\([[:alpha:]]\) .*'
 
     modifier=''
     pattern=''
@@ -141,7 +142,10 @@ list_tasks() {
         completed)
             pattern=$completed
             ;;
-        *)
+        priority)
+            pattern=$priority
+            ;;
+        *) # Don't show completed tasks
             modifier='!'
             pattern=$completed
             ;;
@@ -153,12 +157,30 @@ list_tasks() {
         | awk  "$modifier/^[[:digit:]][[:digit:]]*[[:space:]][[:space:]]*$pattern/ {print}" - \
         | sed -e "s/\([[:digit:]][[:digit:]]*[[:space:]][[:space:]]*\)\($completed\)/\1${C_GREEN}\2${C_RESET}/")
 
+    priority_tasks=$(echo -e "$all_tasks" \
+        | awk "/^[[:digit:]][[:digit:]]*[[:space:]][[:space:]]* $priority/ {print}" \
+        | sort -k2)
+
+    other_tasks=$(echo -e "$all_tasks" \
+        | awk "!/^[[:digit:]][[:digit:]]*[[:space:]][[:space:]]* $priority/ {print}")
+
+    if [[ "$which_tasks" == "priority" ]]
+    then
+        tasks=$priority_tasks
+    elif [[ ! -z "$priority_tasks" ]]
+    then
+        tasks="${priority_tasks}\n${other_tasks}"
+    else
+        tasks=$other_tasks
+    fi
+
     echo -e "\n${C_YELLOW}${indent}TASKS${C_RESET}\n"
-    if [[ -z "$all_tasks" ]]
+
+    if [[ -z "$tasks" ]]
     then
         echo "${indent}No tasks."
     else
-        echo "$all_tasks"
+        echo -e "$tasks"
     fi
     echo -e ""
 }
@@ -264,6 +286,9 @@ else
         ;;
     list-completed | lc)
         list_option=completed
+        ;;
+    priority | lp | p)
+        list_option=priority
         ;;
     time | t)
         time_left

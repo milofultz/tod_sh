@@ -23,6 +23,15 @@ This uses [SoX](https://github.com/chirlu/sox) for the alarm, which can be insta
 
 Tod is used in the command line via whatever alias you created. For instance, if you set an alias to `tod`, then you would add a task with `tod a "New task"`, start a pomodoro timer with `tod 1`, list all tasks with `tod la`, etc.
 
+### Tasks
+
+A task is a line of text that can have modifiers preceding them.
+
+* `x Completed task` - An `x` represents completion.
+* `(A) High priority task!` - A set of parentheses with a single letter inside represents priority, A to Z representing highest to lowest.
+
+### Flags
+
 Flag | Arguments | Description
 --- | --- | ---
 `n[ m]` | `n`: Task number<br>`m`: Minutes (25 by default) | Start pomodoro timer
@@ -35,5 +44,6 @@ N/A / `ls` | | List all uncompleted tasks
 `k` | | Kill timers
 `la` | | List all tasks
 `lc` / `c` | | List all completed tasks
+`lp` / `p` | | List all priority tasks
 `t` | | See elapsed time for timer
 

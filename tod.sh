@@ -220,16 +220,22 @@ add_tasks() {
 }
 
 mark_complete() {
-    task_number=$1
-    get_line $task_number
+    shift # Remove command from args
 
-    if [[ $LINE =~ ^x[[:space:]] ]]
-    then
-        incomplete_line=${LINE:2}
-        perl -i -pe "s/\Q$LINE\E/$incomplete_line/" $TOD_FILE
-    else
-        perl -i -pe "s/(\Q$LINE\E)/x \$1/" $TOD_FILE
-    fi
+    task_numbers="$@"
+
+    for task_number in $task_numbers
+    do
+        get_line $task_number
+
+        if [[ $LINE =~ ^x[[:space:]] ]]
+        then
+            incomplete_line=${LINE:2}
+            perl -i -pe "s/\Q$LINE\E/$incomplete_line/" $TOD_FILE
+        else
+            perl -i -pe "s/(\Q$LINE\E)/x \$1/" $TOD_FILE
+        fi
+    done
 }
 
 delete_tasks() {
@@ -280,7 +286,7 @@ else
             # Equivalent to `lc`
             list_option=completed
         else
-            mark_complete $TARGET
+            mark_complete "$@"
         fi
         ;;
     delete | d)

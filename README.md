@@ -50,7 +50,7 @@ Flag | Arguments | Description
 N/A / `ls` | | List all uncompleted tasks
 `a "task"[ "another task" ...]` | `task`: New task | Add new task
 `b` | | Start break timer
-`c n` | `n`: Task number | Mark task as complete/incomplete
+`c n[ n ...]` | `n`: Task number | Mark task as complete/incomplete
 `d n[ n ...]` | `n`: Task number | Delete task
 `e` | | Open `.tod` file for editing
 `k` | | Kill timers

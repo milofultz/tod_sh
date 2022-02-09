@@ -73,10 +73,8 @@ time_left() {
     task_name=$(cat "$RUNNING_TASK")
     if [[ $elapsed != "" ]]
     then
-        echo ""
         echo "${C_YELLOW}Current Task:${C_RESET} $task_name"
         echo "${C_GREEN}Time Elapsed:${C_RESET} $elapsed"
-        echo ""
     fi
 }
 

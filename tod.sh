@@ -18,6 +18,7 @@ C_RESET=$(tput sgr0)
 # "Return" variables
 LINE=""
 TASK=""
+EXISTING_PID=""
 
 
 init() {
@@ -37,15 +38,19 @@ get_task() {
     TASK="$(echo $LINE | perl -ne 'print "$1" for /([^*]+)/;')"
 }
 
-kill_timers() {
-    running_pid=$(cat "$PIDS")
+get_existing_pid_if_exists() {
+    EXISTING_PID=$(cat "$PIDS")
 
-    if [[ -z $running_pid ]]
+    if [[ -z $EXISTING_PID ]]
     then
         return 0
     fi
+}
 
-    is_running=$(ps -p $running_pid | tail -n +2)
+kill_timers() {
+    get_existing_pid_if_exists
+
+    is_running=$(ps -p $EXISTING_PID | tail -n +2)
 
     if [[ $is_running ]]
     then
@@ -53,7 +58,7 @@ kill_timers() {
         # Stop all background Tod processes. Surpress errors because
         #   if an old process is finished, there is nothing to stop
         echo "Ending existing timer for \"${running_task}\"."
-        kill -9 $running_pid 2> /dev/null
+        kill -9 $EXISTING_PID 2> /dev/null
         # Starting a timer from a shell script creates the pid for
         #   the script as well as the timer itself.
         kill $(pgrep sleep $POMODORO_SECONDS) 2> /dev/null
@@ -61,15 +66,10 @@ kill_timers() {
 }
 
 time_left() {
-    running_pid=$(cat "$PIDS")
-
-    if [[ -z $running_pid ]]
-    then
-        return 0
-    fi
+    get_existing_pid_if_exists
 
     # Show elapsed time and suppress the header
-    elapsed=$(ps -p $running_pid -o "etime=")
+    elapsed=$(ps -p $EXISTING_PID -o "etime=")
     task_name=$(cat "$RUNNING_TASK")
     if [[ $elapsed != "" ]]
     then
@@ -129,8 +129,7 @@ take_break() {
 }
 
 list_tasks() {
-    file=$1
-    all_tasks=$(awk 'NF' "$file")
+    all_tasks=$(awk 'NF' "$TOD_FILE")
 
     indent='   '
     all='.*'
@@ -140,7 +139,7 @@ list_tasks() {
 
     show_completed=true
 
-    which_tasks=$2
+    which_tasks=$1
     case $which_tasks in
         all)
             pattern=$all
@@ -166,11 +165,11 @@ list_tasks() {
         | sed 'N;s/\n/  /' \
         | awk  "/^[[:digit:]][[:digit:]]*[[:space:]][[:space:]]*$pattern/ {print}" - \
         | if [[ $show_completed != "true" ]]
-        then
-            awk "!/^[[:digit:]][[:digit:]]*[[:space:]][[:space:]]*$completed/ {print}" -
-        else
-            cat
-        fi \
+            then
+                awk "!/^[[:digit:]][[:digit:]]*[[:space:]][[:space:]]*$completed/ {print}" -
+            else
+                cat
+            fi \
         | sed -e "s/\([[:digit:]][[:digit:]]*[[:space:]][[:space:]]*\)\($completed\)/\1${C_GREEN}\2${C_RESET}/")
 
     priority_tasks=$(echo -e "$all_tasks" \
@@ -269,6 +268,13 @@ list_option=''
 if [[ "$ACTION" =~ ^[0-9]+$ ]]
 then
     task_number=$ACTION
+    number_of_tasks=$(sed -n "$=" "$TOD_FILE")
+    if [[ $ACTION -gt $number_of_tasks ]]
+    then
+        echo "There is no task ${ACTION}."
+        exit 1
+    fi
+
     do_pomodoro $task_number
     exit 0
 else
@@ -335,7 +341,7 @@ else
 fi
 
 clear
-list_tasks $TOD_FILE $list_option
+list_tasks $list_option
 
 exit 0;
 

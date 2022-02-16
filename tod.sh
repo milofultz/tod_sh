@@ -108,7 +108,6 @@ do_pomodoro() {
 
     # Run pomodoro on current task
     echo -e "Starting timer of $POMODORO_MINUTES minutes for \"$TASK\"."
-    #sleep $seconds \
     sleep $POMODORO_SECONDS \
         && perl -i -pe "s/(\Q${TASK}\E)/\$1$POMODORO_MARK/" $TOD_FILE \
         && echo -e "\n\nTIMER COMPLETE: $TASK\n" \
@@ -226,13 +225,15 @@ mark_complete() {
     for task_number in $task_numbers
     do
         get_line $task_number
+        complete_line=${LINE//\//\\\/}
 
-        if [[ $LINE =~ ^x[[:space:]] ]]
+        if [[ "$LINE" =~ '^x[[:space:]]' ]]
         then
-            incomplete_line=${LINE:2}
-            perl -i -pe "s/\Q$LINE\E/$incomplete_line/" $TOD_FILE
+            incomplete_line=${complete_line:2}
+
+            perl -i -pe "s/\Q${complete_line}\E/${incomplete_line}/" "$TOD_FILE"
         else
-            perl -i -pe "s/(\Q$LINE\E)/x \$1/" $TOD_FILE
+            perl -i -pe "s/(\Q${complete_line}\E)/x \$1/" "$TOD_FILE"
         fi
     done
 }

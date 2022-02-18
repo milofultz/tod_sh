@@ -30,12 +30,13 @@ init() {
 get_line() {
     line_number=$1
     LINE="$(sed -n "${line_number}p" $TOD_FILE)"
+    LINE="$(echo "$LINE" | perl -pe 's@\/@\\\/@g')"
 }
 
 get_task() {
     task_number=$1
     get_line $task_number
-    TASK="$(echo $LINE | perl -ne 'print "$1" for /([^*]+)/;')"
+    TASK="$(echo -e "$LINE" | perl -ne 'print "$1" for /([^*]+)/;')"
 }
 
 get_existing_pid_if_exists() {
@@ -225,15 +226,14 @@ mark_complete() {
     for task_number in $task_numbers
     do
         get_line $task_number
-        complete_line=${LINE//\//\\\/}
 
         if [[ "$LINE" =~ '^x[[:space:]]' ]]
         then
-            incomplete_line=${complete_line:2}
+            incomplete_line=${LINE:2}
 
-            perl -i -pe "s/\Q${complete_line}\E/${incomplete_line}/" "$TOD_FILE"
+            perl -i -pe "s/\Q${LINE}\E/${incomplete_line}/" "$TOD_FILE"
         else
-            perl -i -pe "s/(\Q${complete_line}\E)/x \$1/" "$TOD_FILE"
+            perl -i -pe "s/(\Q${LINE}\E)/x \$1/" "$TOD_FILE"
         fi
     done
 }

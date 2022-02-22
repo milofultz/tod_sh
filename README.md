@@ -1,3 +1,5 @@
+This repo has moved to <http://www.codeberg.org/milofultz/tod_sh>
+
 # Tod
 
 A simple pomodoro task manager in shell scripts.
